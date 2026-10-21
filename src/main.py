@@ -1,9 +1,4 @@
-from kivymd.app import MDApp
-
-class MatchIt(MDApp):
-    def build(self):
-        return None
+from src.core.engine import MatchIt
 
 if __name__ == '__main__':
     MatchIt().run()
-
