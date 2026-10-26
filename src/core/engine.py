@@ -6,6 +6,8 @@ from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.button import MDButton, MDButtonText,MDIconButton
+from kivy.clock import Clock
+
 from kivy.lang import Builder
 from random import choice
 
@@ -108,9 +110,11 @@ class MatchIt(MDApp):
                 btn.theme_shadow_offset = 'Custom'
 
                 btn.md_bg_color = 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0
-                btn.shadow_color = 0,0,0,0.5
-                btn.shadow_offset = 2,-4
-                btn.shadow_softness = 15
+                btn.shadow_color = 0,0.2,0.3,0.5
+                btn.shadow_offset = 2,-2
+                btn.elevation_level = 1
+                btn.shadow_softness = 0
+
 
                 btn.radius = 0,0,0,0
                 btn.shadow_radius = 0, 0, 0, 0
@@ -130,6 +134,10 @@ class MatchIt(MDApp):
                                     pos_hint = {'center_x':0.5,'center_y':0.5},
                                     font_style = 'Title',
                                     )
+                text.theme_font_size = 'Custom'
+                text.font_size = btn.width * 0.9
+                text.theme_text_color = 'Custom'
+                text.color = 1,1,1,0.9
                 btn.add_widget(text)
                 answers_grid.add_widget(btn)
         return main_layout
@@ -140,3 +148,7 @@ if __name__ == '__main__':
 
     # меню - использовать ExpansionPanel https://kivymd.readthedocs.io/en/latest/components/expansionpanel/
     # и NavigationDrawer https://kivymd.readthedocs.io/en/latest/components/navigationdrawer/
+
+
+ # TODO: сделать шрифт посветлее и побольше +
+ #  - сделать логику приложения
