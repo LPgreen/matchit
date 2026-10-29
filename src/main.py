@@ -1,6 +1,6 @@
 import os.path
 
-from src.core.engine import MatchIt
+from core.engine import MatchIt
 
 KV_DIRS = [os.path.join(os.getcwd(), 'src')]
 if __name__ == '__main__':

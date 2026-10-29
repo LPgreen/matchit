@@ -19,7 +19,35 @@ gl_space = 3
 gl_answer_cols = 3
 gl_answer_rows = 4 # менять при разной ориентации
 
-kv = f'''
+kv_answ_btn = f'''
+MDButton:
+    id: answ_btn
+    theme_width: 'Custom'
+    theme_height: 'Custom'
+    size_hint: 1, 1
+    pos_hint: {{'center_x':0.5,'center_y':0.5}}
+    style: 'elevated'
+    theme_bg_color: 'Custom'
+    theme_shadow_color: 'Custom'
+    theme_shadow_offset: 'Custom'
+    md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0
+    shadow_color: 0,0.2,0.3,0.5
+    shadow_offset: 2,-2
+    elevation_level: 1
+    shadow_softness: 0
+    radius: 0,0,0,0
+    shadow_radius: 0, 0, 0, 0
+      
+    MDButtonText:
+        id: text
+        pos_hint: {{'center_x':0.5,'center_y':0.5}}
+        font_style: 'Title'
+        theme_font_size: 'Custom'
+        theme_text_color: 'Custom'
+        color: 1, 1, 1, 0.9'''
+
+
+kv_main_layout = f'''
 MDScreen:
     md_bg_color: app.theme_cls.surfaceColor
     MDBoxLayout:
@@ -96,30 +124,14 @@ class MatchIt(MDApp):
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Skyblue'
         self.theme_cls.dynamic_color= True
-        main_layout = Builder.load_string(kv)
+        main_layout = Builder.load_string(kv_main_layout)
         self.target = main_layout.ids.target_btn
         answers_grid = main_layout.ids.answers_grid
         cols,rows = gl_answer_cols, gl_answer_rows
         for i in range(rows):
             for j in range(cols):
-                answ_btn = MDButton(theme_width = 'Custom', theme_height = 'Custom',
-                               size_hint = (1,1),
-                               pos_hint = {'center_x':0.5,'center_y':0.5})
+                answ_btn = Builder.load_string(kv_answ_btn)
 
-                answ_btn.style = 'elevated'
-                answ_btn.theme_bg_color = 'Custom'
-                answ_btn.theme_shadow_color = 'Custom'
-                answ_btn.theme_shadow_offset = 'Custom'
-
-                answ_btn.md_bg_color = 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0
-                answ_btn.shadow_color = 0,0.2,0.3,0.5
-                answ_btn.shadow_offset = 2,-2
-                answ_btn.elevation_level = 1
-                answ_btn.shadow_softness = 0
-
-
-                answ_btn.radius = 0,0,0,0
-                answ_btn.shadow_radius = 0, 0, 0, 0
                 if i+j == 0:
                     answ_btn.radius = gl_radius, 0, 0, 0
                     answ_btn.shadow_radius = gl_radius, 0, 0, 0
@@ -132,16 +144,10 @@ class MatchIt(MDApp):
                 if i==rows-1 and j == 0:
                     answ_btn.radius = 0, 0, 0, gl_radius
                     answ_btn.shadow_radius = 0, 0, 0, gl_radius
-                text = MDButtonText(text=str(choice(range(10))),
-                                    pos_hint = {'center_x':0.5,'center_y':0.5},
-                                    font_style = 'Title',
-                                    )
-                text.theme_font_size = 'Custom'
+                text = answ_btn.ids.text
+                text.text=str(choice(range(10)))
                 text.font_size = answ_btn.width * 0.9
-                text.theme_text_color = 'Custom'
-                text.color = 1,1,1,0.9
                 answ_btn.bind(on_release = self.on_release_answ_btn)
-                answ_btn.add_widget(text)
                 answers_grid.add_widget(answ_btn)
 
         return main_layout
@@ -168,7 +174,7 @@ if __name__ == '__main__':
 
  # TODO: сделать шрифт посветлее и побольше +
  #  - сделать логику приложения +
- #  - сделать answ_btn - через шаблон kv
+ #  - сделать answ_btn - через шаблон kv +
  #  - terget button - сделать шрифт побольше
  #  - как сделать множественное выделение в pycharm
  #  - сделать курсор влево вправо для пролитывании выбора типа игр
