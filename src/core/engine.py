@@ -81,11 +81,10 @@ MDScreen:
                     pos_hint: {{'center_x':0.5,'center_y':0.5}}
                     radius: {0, 0, gl_radius, gl_radius} 
                     theme_bg_color: 'Custom'
-                    md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0   
-                           
-     
+                    md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
                     
-                    MDButtonText:         
+                    MDButtonText:
+                        id: target_btn_text     
                         text: '1'
                         theme_width: 'Custom'
                         size_hint_y: 1
@@ -147,8 +146,13 @@ class MatchIt(MDApp):
                 text = answ_btn.ids.text
                 text.text=str(choice(range(10)))
                 text.font_size = answ_btn.width * 0.9
+
                 answ_btn.bind(on_release = self.on_release_answ_btn)
                 answers_grid.add_widget(answ_btn)
+
+        target_btn_text = main_layout.ids.target_btn_text
+        target_btn_text.theme_font_size = 'Custom'
+        target_btn_text.font_size = target_btn_text.width * 0.6
 
         return main_layout
 
@@ -175,7 +179,7 @@ if __name__ == '__main__':
  # TODO: сделать шрифт посветлее и побольше +
  #  - сделать логику приложения +
  #  - сделать answ_btn - через шаблон kv +
- #  - terget button - сделать шрифт побольше
+ #  - target button - сделать шрифт побольше +
  #  - как сделать множественное выделение в pycharm
  #  - сделать курсор влево вправо для пролитывании выбора типа игр
  #  - сделать окностатитики и экран расширенной статистики
