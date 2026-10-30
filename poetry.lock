@@ -348,17 +348,17 @@ files = [
 
 [[package]]
 name = "kivy-deps-sdl2"
-version = "0.8.0"
+version = "0.8.1"
 description = "Repackaged binary dependency of Kivy."
 optional = false
 python-versions = "*"
 files = [
-    {file = "kivy_deps.sdl2-0.8.0-cp310-cp310-win_amd64.whl", hash = "sha256:5af0a3b318a6ec9e0f0c1d476a4af4b2d0cbcce4dbfd89bc4681c33bcd6b3bcd"},
-    {file = "kivy_deps.sdl2-0.8.0-cp311-cp311-win_amd64.whl", hash = "sha256:ae3735480841ec9a57c0fb26e8647adee474a3d746147e3d75a1fc177c0fbc01"},
-    {file = "kivy_deps.sdl2-0.8.0-cp312-cp312-win_amd64.whl", hash = "sha256:bfe0cfca77883dde7e297b3b6039fa9cd7ee8df6b0d12516b38addb0551a574c"},
-    {file = "kivy_deps.sdl2-0.8.0-cp313-cp313-win_amd64.whl", hash = "sha256:56b1c44565b5e8cfc510585db13396edfc605965254f49ed8931189c546d481f"},
-    {file = "kivy_deps.sdl2-0.8.0-cp38-cp38-win_amd64.whl", hash = "sha256:5e9f8c0c1e76eb43f0bad8f36c5b92a46fb5696f733ec441db45e6864b1d4065"},
-    {file = "kivy_deps.sdl2-0.8.0-cp39-cp39-win_amd64.whl", hash = "sha256:dbaa6718e66e8cd4967c2d4021e05114c558342e2468a86c0bce917bea10003f"},
+    {file = "kivy_deps_sdl2-0.8.1-cp310-cp310-win_amd64.whl", hash = "sha256:15369e36335d426e3f6ce52fc96bf59effd8de621026c908d5703e88fb423070"},
+    {file = "kivy_deps_sdl2-0.8.1-cp311-cp311-win_amd64.whl", hash = "sha256:b2af6a5e0117fa1ea39b108b69f4bf9fd34553b062bf776413169e537ae3d2fa"},
+    {file = "kivy_deps_sdl2-0.8.1-cp312-cp312-win_amd64.whl", hash = "sha256:6b7e8e6aa2baf83402e08af19e090c66587b4520fedc2ee9807d21f193858dc2"},
+    {file = "kivy_deps_sdl2-0.8.1-cp313-cp313-win_amd64.whl", hash = "sha256:9944a9b583b0e1789f4d7f99265303f4f694394b0706f2c0e4cbe5605d2e8431"},
+    {file = "kivy_deps_sdl2-0.8.1-cp314-cp314-win_amd64.whl", hash = "sha256:0d1ef5fd6cea66299ddefc2b2b6d024636c97a00685d66ca8871a48431442ade"},
+    {file = "kivy_deps_sdl2-0.8.1-cp39-cp39-win_amd64.whl", hash = "sha256:3a14b487dbfe4921b198966b973eaa4075eb2debb7327d418b12c1db05539c01"},
 ]
 
 [[package]]

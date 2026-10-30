@@ -6,7 +6,7 @@ from kivymd.app import MDApp
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.gridlayout import MDGridLayout
-from kivymd.uix.button import MDButton, MDButtonText,MDIconButton
+from kivymd.uix.button import MDButton, MDButtonText,MDButtonIcon
 from kivy.clock import Clock
 
 from kivy.lang import Builder
@@ -63,34 +63,128 @@ MDScreen:
             spacing: {gl_space} 
             padding: {gl_space}  
                 
-            MDBoxLayout:
-                id: target_layout
+            MDGridLayout:
+                id: menu_layout
+                cols: 2
+                rows: 1
                 theme_height: 'Custom'
                 theme_height: 'Custom'
-                orientation: 'vertical'
                 spacing: {gl_space} 
                 padding: {gl_space}              
                 size_hint: (1, 0.1)
-            
+                
                 MDButton:
-                    id: target_btn
+                    id: menu_btn
                     style: 'filled'
                     theme_width: 'Custom'
                     theme_height: 'Custom'
-                    size_hint: (1, 0.1)
-                    pos_hint: {{'center_x':0.5,'center_y':0.5}}
-                    radius: {0, 0, gl_radius, gl_radius} 
+                    size_hint: (0.4, 0.1)
+                    pos_hint: {{'center_x': 0.5,'center_y': 0.5}}
+                    radius: {0, 0, 0, gl_radius} 
                     theme_bg_color: 'Custom'
                     md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
                     
-                    MDButtonText:
-                        id: target_btn_text     
-                        text: '1'
-                        theme_width: 'Custom'
-                        size_hint_y: 1
-                        pos_hint: {{'center_x':0.5, 'center_y':0.5}}
-                        font_style: 'Title'
+                    MDButtonIcon:
+                        id: menu_icon                        
+                        icon: 'menu'     
+                        pos_hint: {{'center_x': 0.5, 'center_y': 0.5}}
+                        theme_icon_color: 'Custom'
+                        icon_color: 'white'
+                        theme_font_size: 'Custom'
+                        font_size: '48sp'
+                        
+                MDGridLayout:              
+                    id: target_layout      
+                    cols: 1                
+                    rows: 2               
+                    theme_height: 'Custom' 
+                    theme_height: 'Custom' 
+                    spacing: {gl_space/2}    
+                    size_hint: (1, 0.1)   
+                
+                    MDGridLayout:              
+                        id: name_game_layout      
+                        cols: 3                
+                        rows: 1               
+                        theme_height: 'Custom' 
+                        theme_height: 'Custom' 
+                        size_hint: (1, 0.5)
+                        
+                        MDButton:
+                            id: swipe_left_game
+                            style: 'filled'
+                            theme_width: 'Custom'
+                            theme_height: 'Custom'
+                            size_hint: (0.3, 1)
+                            pos_hint: {{'center_x': 0.5,'center_y': 0.5}}
+                            radius: {0, 0, 0, 0} 
+                            theme_bg_color: 'Custom'
+                            md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                        
+                            MDButtonIcon:
+                                id: swipe_left_game_icon                        
+                                icon: 'arrow-left-bold'     
+                                pos_hint: {{'center_x': 0.5, 'center_y': 0.5}}
+                                theme_icon_color: 'Custom'
+                                icon_color: 'white'                                                
+                    
+                        MDButton:
+                            id: name_game_btn
+                            style: 'filled'
+                            theme_width: 'Custom'
+                            theme_height: 'Custom'
+                            size_hint: (1, 1)
+                            pos_hint: {{'center_x':0.5,'center_y':0.5}}
+                            radius: {0, 0, 0, 0} 
+                            theme_bg_color: 'Custom'
+                            md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
                             
+                            MDButtonText:
+                                id: name_game_btn_text     
+                                text: 'цифры'
+                                theme_width: 'Custom'
+                                size_hint_y: 1
+                                pos_hint: {{'center_x':0.5, 'center_y':0.5}}
+                                font_style: 'Title'
+                                                
+                        MDButton:
+                            id: swipe_right_game
+                            style: 'filled'
+                            theme_width: 'Custom'
+                            theme_height: 'Custom'
+                            size_hint: (0.3, 1)
+                            pos_hint: {{'center_x': 0.5,'center_y': 0.5}}
+                            radius: {0, 0, 0, 0} 
+                            theme_bg_color: 'Custom'
+                            md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                        
+                            MDButtonIcon:
+                                id: swipe_right_game                        
+                                icon: 'arrow-right-bold'     
+                                pos_hint: {{'center_x': 0.5, 'center_y': 0.5}}
+                                theme_icon_color: 'Custom'
+                                icon_color: 'white'                             
+
+                        
+                    MDButton:
+                        id: target_btn
+                        style: 'filled'
+                        theme_width: 'Custom'
+                        theme_height: 'Custom'
+                        size_hint: (1, 0.5)
+                        pos_hint: {{'center_x':0.5,'center_y':0.5}}
+                        radius: {0, 0, gl_radius, 0} 
+                        theme_bg_color: 'Custom'
+                        md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                        
+                        MDButtonText:
+                            id: target_btn_text     
+                            text: '1'
+                            theme_width: 'Custom'
+                            size_hint_y: 1
+                            pos_hint: {{'center_x':0.5, 'center_y':0.5}}
+                            font_style: 'Title'
+                                
             MDGridLayout:
                 id: answers_grid            
                 cols: {gl_answer_cols}
@@ -130,7 +224,6 @@ class MatchIt(MDApp):
         for i in range(rows):
             for j in range(cols):
                 answ_btn = Builder.load_string(kv_answ_btn)
-
                 if i+j == 0:
                     answ_btn.radius = gl_radius, 0, 0, 0
                     answ_btn.shadow_radius = gl_radius, 0, 0, 0
@@ -152,7 +245,7 @@ class MatchIt(MDApp):
 
         target_btn_text = main_layout.ids.target_btn_text
         target_btn_text.theme_font_size = 'Custom'
-        target_btn_text.font_size = target_btn_text.width * 0.6
+        # target_btn_text.font_size = target_btn_text.height * 0.6
 
         return main_layout
 
@@ -180,8 +273,8 @@ if __name__ == '__main__':
  #  - сделать логику приложения +
  #  - сделать answ_btn - через шаблон kv +
  #  - target button - сделать шрифт побольше +
- #  - как сделать множественное выделение в pycharm
- #  - сделать курсор влево вправо для пролитывании выбора типа игр
+ #  - как сделать множественное выделение в pycharm как VSCode
+ #  - сделать курсор влево вправо для пролитывании выбора типа игр +
  #  - сделать окностатитики и экран расширенной статистики
  #  - сделать меню для выбора типа игр (крыжики для того какие игры учитывать при пролиствании в курсоре)
  #  - сделать курсор влево вправо для выбора типа игр
