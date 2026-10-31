@@ -1,8 +1,8 @@
 import os.path
-
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'core'))
 from core.engine import MatchIt
 
-KV_DIRS = [os.path.join(os.getcwd(), 'src')]
 if __name__ == '__main__':
     MatchIt().run()
 
