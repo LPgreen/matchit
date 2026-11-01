@@ -22,3 +22,14 @@ def vibro(duration: float = 0.1, amplitude: int = 150): # потом при ко
 
         except Exception as exc:
             print(f'Ошибка вибрации {exc}')
+
+def get_tasks():
+    directory = os.path.dirname(__file__) + r'\..\..\data\tasks'
+    file_lst = os.listdir(directory)
+    data_games = []
+    for name in file_lst:
+        with open(f'{directory}\\{name}', 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            data_games.append(data)
+    data_games.sort(key = lambda d:(d['knowledge category'], d['level'], len(d['data'])))
+    return data_games

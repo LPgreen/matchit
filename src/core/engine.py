@@ -2,7 +2,7 @@ import sys
 sys.path.append('core')
 
 from set_window_size import set_window_size
-from functions import vibro
+from functions import vibro, get_tasks
 set_window_size()
 
 from kivymd.app import MDApp
@@ -13,7 +13,8 @@ from kivymd.uix.button import MDButton, MDButtonText,MDButtonIcon
 from kivy.clock import Clock
 
 from kivy.lang import Builder
-from random import choice
+from random import choice, shuffle
+import json
 
 text_color = [(1,0,0,1),]
 bg_color = 0,1,0,1
@@ -21,7 +22,9 @@ gl_radius = 10
 gl_space = 3
 gl_answer_cols = 3
 gl_answer_rows = 4 # менять при разной ориентации
-
+gl_right_color = 0.5,1,0.5,0.6
+gl_wrong_color = 1, 0.5, 0.5, 0.8
+gl_color = 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0
 kv_answ_btn = f'''
 MDButton:
     id: answ_btn
@@ -33,7 +36,7 @@ MDButton:
     theme_bg_color: 'Custom'
     theme_shadow_color: 'Custom'
     theme_shadow_offset: 'Custom'
-    md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0
+    md_bg_color: {gl_color}
     shadow_color: 0,0.2,0.3,0.5
     shadow_offset: 2,-2
     elevation_level: 1
@@ -74,7 +77,7 @@ MDScreen:
                 theme_height: 'Custom'
                 spacing: {gl_space} 
                 padding: {gl_space}              
-                size_hint: (1, 0.1)
+                size_hint: (1, 0.2)
                 
                 MDButton:
                     id: menu_btn
@@ -85,7 +88,7 @@ MDScreen:
                     pos_hint: {{'center_x': 0.5,'center_y': 0.5}}
                     radius: {0, 0, 0, gl_radius} 
                     theme_bg_color: 'Custom'
-                    md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                    md_bg_color: {gl_color}
                     
                     MDButtonIcon:
                         id: menu_icon                        
@@ -122,7 +125,7 @@ MDScreen:
                             pos_hint: {{'center_x': 0.5,'center_y': 0.5}}
                             radius: {0, 0, 0, 0} 
                             theme_bg_color: 'Custom'
-                            md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                            md_bg_color: {gl_color} 
                         
                             MDButtonIcon:
                                 id: swipe_left_game_icon                        
@@ -140,11 +143,11 @@ MDScreen:
                             pos_hint: {{'center_x':0.5,'center_y':0.5}}
                             radius: {0, 0, 0, 0} 
                             theme_bg_color: 'Custom'
-                            md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                            md_bg_color: {gl_color} 
                             
                             MDButtonText:
                                 id: name_game_btn_text     
-                                text: 'цифры'
+                                text: 'Цифры'
                                 theme_width: 'Custom'
                                 size_hint_y: 1
                                 pos_hint: {{'center_x':0.5, 'center_y':0.5}}
@@ -159,7 +162,7 @@ MDScreen:
                             pos_hint: {{'center_x': 0.5,'center_y': 0.5}}
                             radius: {0, 0, 0, 0} 
                             theme_bg_color: 'Custom'
-                            md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                            md_bg_color: {gl_color} 
                         
                             MDButtonIcon:
                                 id: swipe_right_game                        
@@ -178,7 +181,7 @@ MDScreen:
                         pos_hint: {{'center_x':0.5,'center_y':0.5}}
                         radius: {0, 0, gl_radius, 0} 
                         theme_bg_color: 'Custom'
-                        md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0 
+                        md_bg_color: {gl_color} 
                         
                         MDButtonText:
                             id: target_btn_text     
@@ -203,7 +206,7 @@ MDScreen:
                 pos_hint: {{'center_x':0.5,'center_y':0.5}}
                 radius: {gl_radius, gl_radius, 0, 0} 
                 theme_bg_color: 'Custom'
-                md_bg_color: 0.00784313725490196, 0.5333333333333333, 0.8196078431372549, 1.0          
+                md_bg_color: {gl_color}          
      
                     
                 MDButtonText:         
@@ -217,12 +220,24 @@ MDScreen:
 
 class MatchIt(MDApp):
     def build(self):
+        self.current_number_game = 0
+        self.data_games = get_tasks()
+        name_round = self.data_games[self.current_number_game]['name_game']
+        self.difficulty = 1
+        self.answers_count = {'wrong_answers_count_round': 0,
+                              'right_answers_count_round': 0,
+                              'all_wrong_answers_count': 0,
+                              'all_right_answers_count': 0}
+
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Skyblue'
         self.theme_cls.dynamic_color= True
         main_layout = Builder.load_string(kv_main_layout)
         self.target = main_layout.ids.target_btn
-        answers_grid = main_layout.ids.answers_grid
+        self.target_btn_text = main_layout.ids.target_btn_text
+        main_layout.ids.name_game_btn_text.text = name_round
+        self.answers_grid = main_layout.ids.answers_grid
+        self.answers_grid.btns = []
         cols,rows = gl_answer_cols, gl_answer_rows
         for i in range(rows):
             for j in range(cols):
@@ -239,33 +254,81 @@ class MatchIt(MDApp):
                 if i==rows-1 and j == 0:
                     answ_btn.radius = 0, 0, 0, gl_radius
                     answ_btn.shadow_radius = 0, 0, 0, gl_radius
-                text = answ_btn.ids.text
-                text.text=str(choice(range(10)))
-                text.font_size = answ_btn.width * 0.9
 
+                self.answers_grid.btns.append(answ_btn)
                 answ_btn.bind(on_release = self.on_release_answ_btn)
-                answers_grid.add_widget(answ_btn)
+                self.answers_grid.add_widget(answ_btn)
 
         target_btn_text = main_layout.ids.target_btn_text
         target_btn_text.theme_font_size = 'Custom'
         # target_btn_text.font_size = target_btn_text.height * 0.6
-
+        self.new_round()
         return main_layout
 
     def on_release_answ_btn(self, instance):
         vibro(0.05, 100) # проверить на устройстве
         instance.disabled = True
+        last = [self.answers_count['right_answers_count_round'], self.answers_count['wrong_answers_count_round']]
+
         answ_text = instance.children[0]
         target = self.target.children[0]
         if hasattr(answ_text,'text'):
             if answ_text.text == target.text:
-                instance.md_bg_color = 0.5,1,0.5,0.6
+                instance.md_bg_color = gl_right_color
             else:
-                instance.md_bg_color = 1, 0.5, 0.5, 0.8
+                instance.md_bg_color = gl_wrong_color
+            self.answers_count['wrong_answers_count_round'] += answ_text.text != self.right_answer
+            self.answers_count['right_answers_count_round'] += answ_text.text == self.right_answer
+            self.answers_count['all_wrong_answers_count'] += answ_text.text != self.right_answer
+            self.answers_count['all_right_answers_count'] += answ_text.text == self.right_answer
+            if self.answers_count['right_answers_count_round'] == self.num_right_answers:
+                self.new_round()
+                self.reset_answer_btn()
 
+    def reset_answer_btn(self):
+        self.answers_count['wrong_answers_count_round'] = 0
+        self.answers_count['right_answers_count_round'] = 0
+        for answ_btn in self.answers_grid.btns:
+            answ_btn.disabled = False
+            answ_btn.md_bg_color = gl_color
+        self.update_stats_round()
+
+    def new_round(self, num_answers=12):
+        vibro(0.2, 200)
+        self.answers_data = self.data_games[self.current_number_game]['data']
+        self.hint, self.right_answer = choice(list(self.answers_data.items()))
+        num_right_answers = num_answers // (self.difficulty + 1) + choice([0, num_answers % (self.difficulty + 1) > 0])
+        if num_right_answers == 0: num_right_answers = 1
+        if num_right_answers > num_answers//2: num_right_answers = num_answers//2
+        num_wrong_answer = num_answers - num_right_answers
+
+        wrong_answers = list(set(self.answers_data.values())^set(self.right_answer)) * num_wrong_answer
+
+        shuffle(wrong_answers)
+        right_answers = [self.right_answer] * num_right_answers
+        self.round_answers = right_answers + wrong_answers[:num_wrong_answer]
+        shuffle(self.round_answers)
+        self.num_right_answers = num_right_answers
+        if hasattr(self, 'answers_grid'):
+            btn = self.answers_grid.btns[0]
+            self.answer_btn_font_size = int((min(btn.size) - 2*max([*btn.ids.text.padding, gl_space])) / (max(map(len, self.round_answers))+1))
+            for answ_btn, answ in zip(self.answers_grid.btns, self.round_answers):
+                answ_btn.disabled = False
+                answ_btn.ids.text.text = answ
+                if answ_btn.ids.text.text == self.right_answer:
+                    answ_btn.ripple_color = gl_right_color
+                else:
+                    answ_btn.ripple_color = gl_wrong_color
+                answ_btn.size[0] = answ_btn.parent.size[0]
+                answ_btn.ids.text.font_size = self.answer_btn_font_size
+
+        if hasattr(self, 'target_btn_text'):
+            self.target_btn_text.text = self.hint
+
+    def update_stats_round(self):
+        pass
 
 if __name__ == '__main__':
-
     MatchIt().run()
 
     # меню - использовать ExpansionPanel https://kivymd.readthedocs.io/en/latest/components/expansionpanel/
@@ -279,13 +342,12 @@ if __name__ == '__main__':
  #  - как сделать множественное выделение в pycharm как VSCode + - используй alt и левую кнопку мыши, либо alt + j - добавить подобные слова alt+shift+j - убавить
  #  - сделать курсор влево вправо для пролис🦊тывании выбора типа игр +
  #  - сделать библиотеку и генерацию типа игр - цифры, буквы, слоги, счёт (разных уровней) +
- #  - сделать возможность сохранения/загрузки состояния
  #  - сделать механизм генерации и выбора ответов с различной сложностью 50%/50% правильные, и далее по уменьшающей
- #  - сделать механизм похожих ответов и их ранжирование
  #  - сделать механику пролистывания и выбора игры
+ #  - сделать возможность сохранения/загрузки состояния
+ #  - сделать механизм похожих ответов и их ранжирование
  #  - сделать окно статитики и экран расширенной статистики
  #  - сделать меню для выбора типа игр (крыжики для того какие игры учитывать при пролиствании в курсоре)
- #  - сделать курсор влево вправо для выбора типа игр
  #  - как правильно организовать проект - разделать  - в движок engine только логику? а остально раскижать по экранам и формам?
  #  - сдеалть звук и картинки чтоб показывались
-# исправил проблему с импортами
+# 01.11.2026 исправил проблему с импортами
