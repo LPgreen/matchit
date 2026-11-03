@@ -261,6 +261,8 @@ class MatchIt(MDApp):
 
         target_btn_text = main_layout.ids.target_btn_text
         target_btn_text.theme_font_size = 'Custom'
+        self.target.bind(on_press = self.press_target_btn)
+        self.target.bind(on_release = self.reset_answer_btn)
         # target_btn_text.font_size = target_btn_text.height * 0.6
         self.new_round()
         return main_layout
@@ -285,7 +287,7 @@ class MatchIt(MDApp):
                 self.new_round()
                 self.reset_answer_btn()
 
-    def reset_answer_btn(self):
+    def reset_answer_btn(self,instance):
         self.answers_count['wrong_answers_count_round'] = 0
         self.answers_count['right_answers_count_round'] = 0
         for answ_btn in self.answers_grid.btns:
@@ -325,8 +327,18 @@ class MatchIt(MDApp):
         if hasattr(self, 'target_btn_text'):
             self.target_btn_text.text = self.hint
 
+    def press_target_btn(self, instance):
+        vibro(0.03, 50)
+        if (self.answers_count['right_answers_count_round'] == 0 and
+                self.answers_count['wrong_answers_count_round'] == 0):
+            for answ_btn in self.answers_grid.btns:
+                if answ_btn.ids.text.text == self.right_answer:
+                    answ_btn.md_bg_color = gl_right_color
+        self.update_stats_round()
+
     def update_stats_round(self):
         pass
+
 
 if __name__ == '__main__':
     MatchIt().run()
@@ -342,7 +354,7 @@ if __name__ == '__main__':
  #  - как сделать множественное выделение в pycharm как VSCode + - используй alt и левую кнопку мыши, либо alt + j - добавить подобные слова alt+shift+j - убавить
  #  - сделать курсор влево вправо для пролис🦊тывании выбора типа игр +
  #  - сделать библиотеку и генерацию типа игр - цифры, буквы, слоги, счёт (разных уровней) +
- #  - сделать механизм генерации и выбора ответов с различной сложностью 50%/50% правильные, и далее по уменьшающей
+ #  - сделать механизм генерации и выбора ответов с различной сложностью 50%/50% правильные, и далее по уменьшающей +
  #  - сделать механику пролистывания и выбора игры
  #  - сделать возможность сохранения/загрузки состояния
  #  - сделать механизм похожих ответов и их ранжирование
