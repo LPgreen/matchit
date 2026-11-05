@@ -165,7 +165,7 @@ MDScreen:
                             md_bg_color: {gl_color} 
                         
                             MDButtonIcon:
-                                id: swipe_right_game                        
+                                id: swipe_right_game_icon                       
                                 icon: 'arrow-right-bold'     
                                 pos_hint: {{'center_x': 0.5, 'center_y': 0.5}}
                                 theme_icon_color: 'Custom'
@@ -232,11 +232,11 @@ class MatchIt(MDApp):
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Skyblue'
         self.theme_cls.dynamic_color= True
-        main_layout = Builder.load_string(kv_main_layout)
-        self.target = main_layout.ids.target_btn
-        self.target_btn_text = main_layout.ids.target_btn_text
-        main_layout.ids.name_game_btn_text.text = name_round
-        self.answers_grid = main_layout.ids.answers_grid
+        self.main_layout = Builder.load_string(kv_main_layout)
+        self.target = self.main_layout.ids.target_btn
+        self.target_btn_text = self.main_layout.ids.target_btn_text
+        self.main_layout.ids.name_game_btn_text.text = name_round
+        self.answers_grid = self.main_layout.ids.answers_grid
         self.answers_grid.btns = []
         cols,rows = gl_answer_cols, gl_answer_rows
         for i in range(rows):
@@ -259,13 +259,16 @@ class MatchIt(MDApp):
                 answ_btn.bind(on_release = self.on_release_answ_btn)
                 self.answers_grid.add_widget(answ_btn)
 
-        target_btn_text = main_layout.ids.target_btn_text
+        target_btn_text = self.main_layout.ids.target_btn_text
         target_btn_text.theme_font_size = 'Custom'
+        self.swipe_right_game =  self.main_layout.ids.swipe_right_game
         self.target.bind(on_press = self.press_target_btn)
         self.target.bind(on_release = self.reset_answer_btn)
+        self.swipe_right_game.bind(on_press=self.next_game)
+
         # target_btn_text.font_size = target_btn_text.height * 0.6
         self.new_round()
-        return main_layout
+        return self.main_layout
 
     def on_release_answ_btn(self, instance):
         vibro(0.05, 100) # проверить на устройстве
@@ -336,6 +339,19 @@ class MatchIt(MDApp):
                     answ_btn.md_bg_color = gl_right_color
         self.update_stats_round()
 
+    def next_game(self, instance):
+        print('self.swipe_right_game')
+        self.current_number_game += 1
+
+        self.current_number_game = self.current_number_game % len(self.data_games)
+        name_round = self.data_games[self.current_number_game]['name_game']
+        self.answers_data = self.data_games[self.current_number_game]['data']
+
+        self.new_round(num_answers=12)
+        self.main_layout.ids.name_game_btn_text.text = name_round.title()
+
+
+
     def update_stats_round(self):
         pass
 
@@ -355,7 +371,7 @@ if __name__ == '__main__':
  #  - сделать курсор влево вправо для пролис🦊тывании выбора типа игр +
  #  - сделать библиотеку и генерацию типа игр - цифры, буквы, слоги, счёт (разных уровней) +
  #  - сделать механизм генерации и выбора ответов с различной сложностью 50%/50% правильные, и далее по уменьшающей +
- #  - сделать механику пролистывания и выбора игры
+ #  - сделать механику пролистывания и выбора игры+
  #  - сделать возможность сохранения/загрузки состояния
  #  - сделать механизм похожих ответов и их ранжирование
  #  - сделать окно статитики и экран расширенной статистики
