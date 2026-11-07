@@ -308,29 +308,33 @@ class MatchIt(MDApp):
         if num_right_answers == 0: num_right_answers = 1
         if num_right_answers > num_answers//2: num_right_answers = num_answers//2
         num_wrong_answer = num_answers - num_right_answers
-
         wrong_answers = list(set(self.answers_data.values())^set(self.right_answer)) * num_wrong_answer
-
         shuffle(wrong_answers)
         right_answers = [self.right_answer] * num_right_answers
         self.round_answers = right_answers + wrong_answers[:num_wrong_answer]
         shuffle(self.round_answers)
         self.num_right_answers = num_right_answers
+        Clock.schedule_once(lambda *args: self.set_answer_btns())
+        if hasattr(self, 'target_btn_text'):
+            self.target_btn_text.text = self.hint
+
+    def set_answer_btns(self):
         if hasattr(self, 'answers_grid'):
-            btn = self.answers_grid.btns[0]
-            self.answer_btn_font_size = int((min(btn.size) - 2*max([*btn.ids.text.padding, gl_space])) / (max(map(len, self.round_answers))+1))
+            btn = self.answers_grid.btns[1]
+            self.answer_btn_font_size = int(
+                (min(btn.size) - 2 * max([*btn.ids.text.padding, gl_space])) / (max(map(len, self.round_answers)) + 1))
+            if self.answer_btn_font_size < 0:
+                Clock.schedule_once(lambda *args: self.set_answer_btns(), 1) # это тупо и не спортивно
             for answ_btn, answ in zip(self.answers_grid.btns, self.round_answers):
-                answ_btn.disabled = False
+                answ_btn.ids.text.font_size = self.answer_btn_font_size
                 answ_btn.ids.text.text = answ
                 if answ_btn.ids.text.text == self.right_answer:
                     answ_btn.ripple_color = gl_right_color
                 else:
                     answ_btn.ripple_color = gl_wrong_color
                 answ_btn.size[0] = answ_btn.parent.size[0]
-                answ_btn.ids.text.font_size = self.answer_btn_font_size
+                answ_btn.disabled = False
 
-        if hasattr(self, 'target_btn_text'):
-            self.target_btn_text.text = self.hint
 
     def press_target_btn(self, instance):
         vibro(0.03, 50)
@@ -382,9 +386,11 @@ if __name__ == '__main__':
  #  - сделать библиотеку и генерацию типа игр - цифры, буквы, слоги, счёт (разных уровней) +
  #  - сделать механизм генерации и выбора ответов с различной сложностью 50%/50% правильные, и далее по уменьшающей +
  #  - сделать механику пролистывания и выбора игры+
+ #  - исправит шрифт при первом запуске игры+
  #  - сделать возможность сохранения/загрузки состояния
  #  - сделать механизм похожих ответов и их ранжирование
  #  - сделать окно статитики и экран расширенной статистики
+ #  - сделать настоящий свайп и привязать к кнопкам влево вправо
  #  - сделать меню для выбора типа игр (крыжики для того какие игры учитывать при пролиствании в курсоре)
  #  - как правильно организовать проект - разделать  - в движок engine только логику? а остально раскижать по экранам и формам?
  #  - сдеалть звук и картинки чтоб показывались
