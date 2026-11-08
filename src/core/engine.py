@@ -2,7 +2,7 @@ import sys
 sys.path.append('core')
 
 from set_window_size import set_window_size
-from functions import vibro, get_tasks
+from functions import vibro, get_tasks, save_settings, get_settings
 set_window_size()
 
 from kivymd.app import MDApp
@@ -220,14 +220,29 @@ MDScreen:
 
 class MatchIt(MDApp):
     def build(self):
-        self.current_number_game = 0
+        try:
+            self.file_settings = 'settings.json'
+            settings = get_settings(file_name =  self.file_settings)
+        except:
+            print(f'Файл настроек {self.file_settings} - не найден, установки по умолчанию')
+            settings = dict(number_round=0,
+                            current_number_game=0,
+                            difficulty=1,
+                            all_wrong_answers_count=0,
+                            all_right_answers_count=0,
+                            sound_volume = 0.3,
+                            number_rounds_session = 3
+                            )
+        print(settings)
+        self.number_round = settings['number_round']
+        self.current_number_game = settings['current_number_game']
         self.data_games = get_tasks()
         name_round = self.data_games[self.current_number_game]['name_game']
-        self.difficulty = 1
+        self.difficulty = settings['current_number_game']
         self.answers_count = {'wrong_answers_count_round': 0,
                               'right_answers_count_round': 0,
-                              'all_wrong_answers_count': 0,
-                              'all_right_answers_count': 0}
+                              'all_wrong_answers_count': settings['all_wrong_answers_count'],
+                              'all_right_answers_count': settings['all_right_answers_count']}
 
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Skyblue'
@@ -289,6 +304,7 @@ class MatchIt(MDApp):
             self.answers_count['all_wrong_answers_count'] += answ_text.text != self.right_answer
             self.answers_count['all_right_answers_count'] += answ_text.text == self.right_answer
             if self.answers_count['right_answers_count_round'] == self.num_right_answers:
+                self.number_round += 1
                 self.new_round()
                 self.reset_answer_btn()
 
@@ -343,6 +359,7 @@ class MatchIt(MDApp):
             for answ_btn in self.answers_grid.btns:
                 if answ_btn.ids.text.text == self.right_answer:
                     answ_btn.md_bg_color = gl_right_color
+        self.reset_answer_btn(instance)
         self.update_stats_round()
 
     def next_game(self, instance):
@@ -352,6 +369,7 @@ class MatchIt(MDApp):
         self.answers_data = self.data_games[self.current_number_game]['data']
 
         self.new_round(num_answers=12)
+        self.reset_answer_btn(instance)
         self.main_layout.ids.name_game_btn_text.text = name_round.title()
 
     def previous_game(self, instance):
@@ -363,12 +381,19 @@ class MatchIt(MDApp):
         self.new_round(num_answers=12)
         self.main_layout.ids.name_game_btn_text.text = name_round.title()
 
-
-
-
     def update_stats_round(self):
         pass
 
+    def on_stop(self):
+        name_round = self.data_games[self.current_number_game]['name_game']
+        save_settings(file_name=self.file_settings,
+                      number_round = self.number_round,
+                      current_number_game=self.current_number_game,
+                      difficulty=self.difficulty,
+                      all_wrong_answers_count=self.answers_count['wrong_answers_count_round'],
+                      all_right_answers_count=self.answers_count['right_answers_count_round'],
+                      font_size=self.answer_btn_font_size
+                     )
 
 if __name__ == '__main__':
     MatchIt().run()
@@ -387,7 +412,7 @@ if __name__ == '__main__':
  #  - сделать механизм генерации и выбора ответов с различной сложностью 50%/50% правильные, и далее по уменьшающей +
  #  - сделать механику пролистывания и выбора игры+
  #  - исправит шрифт при первом запуске игры+
- #  - сделать возможность сохранения/загрузки состояния
+ #  - сделать возможность сохранения/загрузки состояния+
  #  - сделать механизм похожих ответов и их ранжирование
  #  - сделать окно статитики и экран расширенной статистики
  #  - сделать настоящий свайп и привязать к кнопкам влево вправо
@@ -395,3 +420,5 @@ if __name__ == '__main__':
  #  - как правильно организовать проект - разделать  - в движок engine только логику? а остально раскижать по экранам и формам?
  #  - сдеалть звук и картинки чтоб показывались
 # 01.11.2026 исправил проблему с импортами
+# 08.11.2026 исправил проблему с вычислением шрифтов при первой загрузке
+# Но сделал тупой костыль - см. в set_answer_btns  - Clock.schedule_once(lambda *args: self.set_answer_btns(), 1)

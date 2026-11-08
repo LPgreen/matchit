@@ -33,3 +33,35 @@ def get_tasks():
             data_games.append(data)
     data_games.sort(key = lambda d:(d['knowledge category'], d['level'], len(d['data'])))
     return data_games
+
+
+def get_settings(file_name = 'settings.json'):
+    file_name = file_name
+    directory = os.path.dirname(__file__) + r'\..\..\data'
+    with open(fr'{directory}\{file_name}', 'r', encoding='utf-8') as file:
+        return json.load(file)
+
+def save_settings(file_name = 'settings.json',
+                  number_round=0,
+                  current_number_game=0,
+                  difficulty=1,
+                  all_wrong_answers_count=0,
+                  all_right_answers_count=0,
+                  font_size=None,
+                  sound_volume=0.3,
+                  number_rounds_session=3):
+    file_name = file_name
+    directory = os.path.dirname(__file__) + r'\..\..\data'
+
+    settings = dict(number_round=number_round,
+                    current_number_game=current_number_game,
+                    difficulty=difficulty,
+                    all_wrong_answers_count=all_wrong_answers_count,
+                    all_right_answers_count=all_right_answers_count,
+                    font_size=font_size
+                    # sound_volume = sound_volume,
+                    # number_rounds_session = number_rounds_session
+                    )
+
+    with open(fr'{directory}\{file_name}', 'w', encoding='utf-8') as file:
+        json.dump(settings, file, ensure_ascii=False)
